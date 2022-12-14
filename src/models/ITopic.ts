@@ -7,6 +7,6 @@ export default interface ITopic {
   title: string;
   description: string;
   state: ETopicState;
-  discussionTimeMillis: number | null;
+  discussionTimeMinutes: number | null;
   notes: INote[];
 }

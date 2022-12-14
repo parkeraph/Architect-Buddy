@@ -13,6 +13,8 @@ const mockBoards: IBoard[] = [
         description:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam",
         state: 0,
+        discussionTimeMinutes: 10,
+        notes: [],
       },
       {
         id: 1,
@@ -21,6 +23,8 @@ const mockBoards: IBoard[] = [
         description:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam",
         state: 1,
+        discussionTimeMinutes: 15,
+        notes: [],
       },
       {
         id: 3,
@@ -29,6 +33,8 @@ const mockBoards: IBoard[] = [
         description:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam",
         state: 1,
+        discussionTimeMinutes: 30,
+        notes: [],
       },
     ],
   },
@@ -44,6 +50,8 @@ const mockBoards: IBoard[] = [
         description:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam",
         state: 0,
+        discussionTimeMinutes: 60,
+        notes: [],
       },
     ],
   },

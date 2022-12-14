@@ -15,7 +15,7 @@
                 @dragstart="startDrag($event, topic)" 
                 class="column-item"
             >
-                <v-card :title="topic.title" :text="topic.description"></v-card>
+                <TopicCard :topic="topic" v-on:delete="onTopicDelete(topic.id)"/>
             </div>
         </div>
 
@@ -29,6 +29,7 @@
 <script setup lang="ts">
 import { computed, defineProps } from 'vue';
 import { storeToRefs } from 'pinia';
+import TopicCard from '../../components/TopicCard.vue';
 import ETopicState from '../../models/ETopicState';
 import ITopic from '../../models/ITopic';
 import useMeetingBoardStore from '../../store/MeetingBoardStore';
@@ -46,8 +47,6 @@ const columnTopics = computed(() => {
 });
 
 const startDrag = (event: DragEvent, item: ITopic) => {
-    console.log("start drag: ", event, item);
-
     if(event.dataTransfer){
         event.dataTransfer.dropEffect = 'move';
         event.dataTransfer.effectAllowed = 'move';
@@ -56,14 +55,16 @@ const startDrag = (event: DragEvent, item: ITopic) => {
 }
 
 const onDrop = (event: DragEvent) => {
-    console.log("Topic", topics.value.find( topic => topic.id === parseInt(event.dataTransfer.getData('topicId'))), " dropped on column state: ", columnState);
-
     if(event.dataTransfer){
         console.log("here")
         const topicId = parseInt(event.dataTransfer.getData('topicId'));
         let topicIdx = 0;
         meetingBoardStore.changeTopicState(topicId, columnState);
     }
+}
+
+const onTopicDelete = (topicId: number) => {
+    meetingBoardStore.deleteTopic(topicId);
 }
 
 </script>

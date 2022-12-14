@@ -14,17 +14,14 @@
                 v-if="timeboxedDiscussion"
                 v-model="maxDiscussionTime"
                 label="Time Limit"
-                step="1"
+                step="10"
+                min="10"
+                max="90"
                 >
             </v-slider>
             
             <div v-if="timeboxedDiscussion" class="slider-value-display">
-                <span v-if="Math.floor(maxDiscussionTime / 60) > 0">
-                    {{Math.floor(maxDiscussionTime / 60)}}
-                    <span v-if="Math.floor(maxDiscussionTime / 60) > 1">{{Math.floor(maxDiscussionTime / 60)}} hours </span>
-                    <span v-else> hour </span>
-                </span>
-                <span>{{maxDiscussionTime % 60}} minutes </span>
+                {{conversationalTimeLength}}
             </div>  
                 
 
@@ -40,16 +37,18 @@
 </template>
 
 <script setup lang="ts">
-import { ref, defineEmits } from 'vue'
+import { ref, defineEmits, computed } from 'vue'
 import ITopic from '../models/ITopic';
+import { getConversationalTimeLength } from '../utils/timeUtils';
 
 const topicTitle = ref<string>('');
 const topicDescription = ref<string>('');
 const timeboxedDiscussion = ref<boolean>(false);
-const maxDiscussionTime = ref<number>(0);
+const maxDiscussionTime = ref<number>(10);
 
 const emit = defineEmits(['submit'])
 
+const conversationalTimeLength = computed(() => getConversationalTimeLength(maxDiscussionTime.value));
 
 const onCreateClick = () => {
     emit('submit', topicTitle.value, topicDescription.value, timeboxedDiscussion ? maxDiscussionTime : null)    

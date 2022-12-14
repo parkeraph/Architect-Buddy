@@ -38,7 +38,7 @@ const useMeetingBoardStore = defineStore("MeetingBoard", () => {
   const createTopic = (
     newTopicTitle: string,
     newTopicDescription: string,
-    newDiscussionTimeMilli: number | null
+    newDiscussionTimeMinutes: number | null
   ) => {
     //this will be replaced with the api create response
     let highestId = 0;
@@ -52,11 +52,15 @@ const useMeetingBoardStore = defineStore("MeetingBoard", () => {
       description: newTopicDescription,
       boardId: boardId.value,
       state: ETopicState.new,
-      discussionTimeMillis: newDiscussionTimeMilli,
+      discussionTimeMinutes: newDiscussionTimeMinutes,
       notes: [],
     };
 
     topics.value = [...topics.value, newTopic];
+  };
+
+  const deleteTopic = (topicId: number) => {
+    topics.value = topics.value.filter((topic) => topic.id !== topicId);
   };
 
   return {
@@ -67,6 +71,7 @@ const useMeetingBoardStore = defineStore("MeetingBoard", () => {
     fetchTopicsByBoardId,
     changeTopicState,
     createTopic,
+    deleteTopic,
   };
 });
 

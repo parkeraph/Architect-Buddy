@@ -9,7 +9,7 @@
     </div>
 
     <v-dialog max-width="50%" v-model="showTaskCreationModal" >
-        <NewTopicModal @submit="handleNewTopicSubmit" v-show="showTaskCreationModal"></NewTopicModal>
+        <TopicForm @submit="handleNewTopicSubmit" v-show="showTaskCreationModal"></TopicForm>
     </v-dialog>
 
     <v-btn
@@ -43,7 +43,7 @@
     import ETopicState from '../../models/ETopicState';
     import useMeetingBoardStore from '../../store/MeetingBoardStore';
     import MeetingBoardColumn from './MeetingBoardColumn.vue';
-    import NewTopicModal from '../../components/NewTopicModal.vue';
+    import TopicForm from '../../components/TopicForm.vue';
 
     const { boardId } = defineProps<{
         boardId: number

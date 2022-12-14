@@ -23,6 +23,19 @@ const useMeetingBoardStore = defineStore("MeetingBoard", () => {
     isLoading.value = false;
   };
 
+  const modifyTopic = (topicId: number, newTopic: ITopic) => {
+    console.log("new topic", newTopic);
+
+    let topicIdx = 0;
+    for (const topic of topics.value) {
+      if (topic.id === topicId) {
+        topics.value[topicIdx] = newTopic;
+        break;
+      }
+      topicIdx++;
+    }
+  };
+
   const changeTopicState = (topicId: number, newState: ETopicState) => {
     let topicIdx = 0;
     for (const topic of topics.value) {
@@ -69,6 +82,7 @@ const useMeetingBoardStore = defineStore("MeetingBoard", () => {
     boardName,
     topics,
     fetchTopicsByBoardId,
+    modifyTopic,
     changeTopicState,
     createTopic,
     deleteTopic,

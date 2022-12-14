@@ -1,5 +1,5 @@
 <template>
-    <v-card id="new-topic-modal-wrapper" title="Create Topic">
+    <v-card id="new-topic-modal-wrapper" :title="formTitle">
         <div id="new-topic-form">
             
             <v-text-field v-model="topicTitle" variant="outlined" density="compact" label="Topic Name"></v-text-field>
@@ -27,9 +27,9 @@
 
             <v-btn
             color="#33aef5"
-            @click="onCreateClick"
+            @click="onSubmitClick"
             >
-                Create
+                Submit
             </v-btn>
 
         </div>
@@ -37,21 +37,61 @@
 </template>
 
 <script setup lang="ts">
-import { ref, defineEmits, computed } from 'vue'
+import { ref, defineProps, withDefaults, defineEmits, computed, onMounted } from 'vue'
 import ITopic from '../models/ITopic';
 import { getConversationalTimeLength } from '../utils/timeUtils';
 
+
+interface NewTopicFormProps {
+    formTitle?: string
+    topic?: ITopic
+}
+
+const { topic, formTitle} = withDefaults(defineProps<NewTopicFormProps>(), {
+    formTitle: () => "Create Topic",
+    topic: () => { return {
+        id: -1,
+        boardId: -1,
+        title: "",
+        description: "",
+        state: 0,
+        discussionTimeMinutes: null,
+        notes: [],
+      }}
+})
+
 const topicTitle = ref<string>('');
 const topicDescription = ref<string>('');
-const timeboxedDiscussion = ref<boolean>(false);
-const maxDiscussionTime = ref<number>(10);
+const maxDiscussionTime = ref<number | undefined>(undefined);
+const isTimeboxed = ref<boolean>(false)
+
+const timeboxedDiscussion = computed({
+    get() {
+        return isTimeboxed.value && maxDiscussionTime.value !== undefined
+    },
+    set(newValue: boolean) {
+        isTimeboxed.value = newValue;
+        maxDiscussionTime.value = 10
+    }
+});
+
+onMounted(() => {
+    topicTitle.value = topic.title;
+    topicDescription.value = topic.description;
+
+    if(topic.discussionTimeMinutes){
+        maxDiscussionTime.value = topic.discussionTimeMinutes || 10;
+        isTimeboxed.value = true;
+    }
+        
+})
 
 const emit = defineEmits(['submit'])
 
-const conversationalTimeLength = computed(() => getConversationalTimeLength(maxDiscussionTime.value));
+const conversationalTimeLength = computed(() => getConversationalTimeLength(maxDiscussionTime.value || 0));
 
-const onCreateClick = () => {
-    emit('submit', topicTitle.value, topicDescription.value, timeboxedDiscussion ? maxDiscussionTime : null)    
+const onSubmitClick = () => {
+    emit('submit', topicTitle.value, topicDescription.value, isTimeboxed.value ? maxDiscussionTime.value : null, topic.id)    
 }
 
 </script>

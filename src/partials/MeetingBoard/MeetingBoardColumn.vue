@@ -15,21 +15,26 @@
                 @dragstart="startDrag($event, topic)" 
                 class="column-item"
             >
-                <TopicCard :topic="topic" v-on:delete="onTopicDelete(topic.id)"/>
+                <TopicCard :topic="topic" v-on:delete="onTopicDelete(topic.id)" v-on:edit="onTopicEdit(topic.id)"/>
             </div>
-        </div>
+        </div>        
 
         <div v-else id="empty-column-msg" @drop="onDrop($event)" @dragenter.prevent @dragover.prevent>
             <span>Drag and drop content to add..</span>
         </div>
+
+        <v-dialog max-width="50%" v-model="showEditModal" >
+            <TopicForm v-if="showEditModal" form-title="Edit Topic" :topic="editModalTopic" @submit="handleTopicEditSubmit" ></TopicForm>
+        </v-dialog>
     
     </div>
 </template>
 
 <script setup lang="ts">
-import { computed, defineProps } from 'vue';
+import { ref, computed, defineProps } from 'vue';
 import { storeToRefs } from 'pinia';
 import TopicCard from '../../components/TopicCard.vue';
+import TopicForm from '../../components/TopicForm.vue'
 import ETopicState from '../../models/ETopicState';
 import ITopic from '../../models/ITopic';
 import useMeetingBoardStore from '../../store/MeetingBoardStore';
@@ -41,6 +46,8 @@ const { columnState , columnTitle } = defineProps<{
 
 const meetingBoardStore = useMeetingBoardStore();
 const { topics } = storeToRefs(meetingBoardStore);
+const showEditModal = ref<boolean>(false);
+const editModalTopic = ref<ITopic | null>(null);
 
 const columnTopics = computed(() => {
     return topics.value.filter(topic => topic.state == columnState);
@@ -65,6 +72,24 @@ const onDrop = (event: DragEvent) => {
 
 const onTopicDelete = (topicId: number) => {
     meetingBoardStore.deleteTopic(topicId);
+}
+
+const onTopicEdit = (topicId: number) => {
+    showEditModal.value = true;
+    editModalTopic.value = topics.value.find(topic => topic.id === topicId);
+}
+
+const handleTopicEditSubmit = (topicTitle: string, topicDescription: string, maxDiscussionTimeMinutes: number | null, topicId: number) => {
+    
+    const topicToModify = topics.value.find(topic => topic.id === topicId);
+
+    console.log("changes", maxDiscussionTimeMinutes)
+
+    if(topicToModify){
+        meetingBoardStore.modifyTopic(topicToModify.id, {...topicToModify, title: topicTitle, description: topicDescription, discussionTimeMinutes: maxDiscussionTimeMinutes});
+    }
+
+    showEditModal.value = false;
 }
 
 </script>
